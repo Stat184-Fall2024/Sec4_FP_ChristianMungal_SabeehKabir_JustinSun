@@ -13,3 +13,38 @@ twenty20_stats <- twenty20player %>%
 #Getting the 2020 draft class stats from the 2023-2024 NBA Season
 twenty23_stats <- twenty23player %>%
   filter(NAME %in% keep2020)
+
+library(dplyr)
+
+#This is what i have so far
+
+my_data <- read.csv("~/Desktop/2020-21NBASTATS.csv")
+my_data2 <- read.csv("~/Desktop/2020DRAFTCLASS.csv")
+my_data3 <- read.csv("~/Desktop/2023-24NBASTATS.csv")
+
+my_data3 <- my_data3 %>%
+  rename(Player = NAME)   # Change NAME to Player if needed
+
+names_to_remove <- c(
+  "Anthony Edwards", "James Wiseman", "LaMelo Ball", "Patrick Williams",
+  "Isaac Okoro", "Onyeka Okongwu", "Killian Hayes", "Obi Toppin",
+  "Deni Avdija", "Jalen Smith", "Devin Vassell", "Tyrese Haliburton",
+  "Kira Lewis Jr.", "Aaron Nesmith", "Cole Anthony", "Isaiah Stewart",
+  "Aleksej Pokusevski", "Josh Green", "Saddiq Bey", "Precious Achiuwa",
+  "Tyrese Maxey", "Zeke Nnaji", "Leandro Bolmaro", "R.J. Hampton",
+  "Immanuel Quickley", "Payton Pritchard", "Udoka Azubuike", "Jaden McDaniels",
+  "Malachi Flynn", "Desmond Bane", "Tyrell Terry", "Vernon Carey Jr.",
+  "Daniel Oturu", "Théo Maledon", "Xavier Tillman Sr.", "Tyler Bey",
+  "Vit Krejci", "Saben Lee", "Elijah Hughes", "Robert Woodard II",
+  "Tre Jones", "Nick Richards", "Jahmi'us Ramsey", "Marko Simonovic",
+  "Jordan Nwora", "CJ Elleby", "Yam Madar", "Nico Mannion",
+  "Isaiah Joe", "Skylar Mays", "Justinian Jessup", "KJ Martin",
+  "Cassius Winston", "Cassius Stanley", "Jay Scrubb", "Grant Riller",
+  "Reggie Perry", "Paul Reed", "Jalen Harris", "Sam Merrill"
+)
+
+filtered_data <- my_data %>%
+  filter(Player %in% names_to_remove)
+
+filtered_data3 <- my_data3 %>%
+  filter(Player %in% names_to_remove)
