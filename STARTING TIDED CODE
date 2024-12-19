@@ -60,6 +60,9 @@ library(dplyr)
 library("tidyverse")
 library(base)
 library(tidyr)
+install.packages("ggrepel")
+library(ggrepel)
+library(ggplot2)
 
 twenty23player <- read.csv("/Users/christianmungal/Desktop/STAT184/2023-24NBASTATS.csv")
 twenty20player <- read.csv("/Users/christianmungal/Desktop/STAT184/2020-21NBASTATS.csv")
@@ -163,9 +166,6 @@ twenty23_stats <- twenty23_stats[-c(
   1, 9, 11, 12, 15, 20, 21, 22, 24, 30, 31, 32, 35, 36, 37), ]
 twenty20_stats <- twenty20_stats[-c(9, 11, 23, 26), ]
 
-#Making the plots and graphs
-library(ggplot2)
-
 PTS_PROG <- bind_cols(
   select(twenty20_stats, Player),
   select(twenty20_stats, PTS),
@@ -173,35 +173,98 @@ PTS_PROG <- bind_cols(
 )
 PTS_PROG <- PTS_PROG %>%
   rename(
-    PPG2020 = PTS,
-    PPG2023 = PPG
+    "2020" = PTS,
+    "2023" = PPG
   )
 
 PTS_PROG_FORMED <- pivot_longer(
   PTS_PROG,
-  cols = c(PPG2020, PPG2023),
-  names_to = "Season",
-  values_to = "Points"
+  cols = c("2020", "2023"),
+  names_to = "Year",
+  values_to = "PPG"
 )
-PTS_PROG_FORMED$Player <- gsub(" ", "\n", PTS_PROG_FORMED$Player)
-
+PTS_PROG_FORMED$Year <- as.numeric(PTS_PROG_FORMED$Year)
 ggplot(
-  PTS_PROG_FORMED,
+  PTS_PROG_FORMED, 
   aes(
-    x = Player,
-    y = Points, 
-    fill = Season
+    x = Year,
+    y = PPG, 
+    color = Player, 
+    group = Player
   )
 ) +
-  geom_bar(stat = "identity", position = "stack", width = 0.5) +
-  labs(title = "2020 Draft Class Points (2020 vs 2023) Seasons",
-       x = "Player Name", 
-       y = "Points") +
-  scale_fill_manual(values = c(PPG2020 = "blue", PPG2023 = "lightblue"))
+  geom_line(size = 0.7) +
+  geom_point(size = 2) +
+  labs(
+    title = "Points Per Game Over Time", 
+    x = "Year", 
+    y = "Points Per Game (PPG)"
+  ) +
+  scale_x_continuous(
+    breaks = c(2020, 2023),
+    limits = c(2019,2024)
+  ) +
+  geom_text_repel(
+    data = PTS_PROG_FORMED[PTS_PROG_FORMED$Year == 2023, ], 
+    aes(
+      label = Player
+    ), 
+    nudge_x = 0.5, 
+    direction = "y", 
+    hjust = 0
+  )+
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 0, hjust = 0.5, size = 3))
+  theme(
+    legend.position = "none"
+  )
 
-*TIMEPLOT* FOR GROWTH VISUALIZATIONS
+#Defensive Stats 
+twenty23_stats <- twenty23_stats %>%
+  mutate(DefStats23 = SPG + BPG)
+
+twenty20_stats <- twenty20_stats %>%
+  mutate(DefStats20 = STL + BLK)
+
+Def_PROG <- bind_cols(
+  select(twenty20_stats, Player),
+  select(twenty20_stats, DefStats20),
+  select(twenty23_stats, DefStats23)
+)
+Def_PROG <- Def_PROG %>%
+  rename(
+    "2020" = DefStats20,
+    "2023" = DefStats23)
+
+Def_PROG_FORMED <- Def_PROG %>%
+  pivot_longer(
+    cols = c("2020", "2023"), 
+    names_to = "Year", 
+    values_to = "Defensive Stats (BLKS +STLS)"
+  )
+ggplot(
+  Def_PROG_FORMED, 
+  aes(x = Year, 
+      y = `Defensive Stats (BLKS +STLS)`, 
+      color = Player, 
+      group = Player)
+) +
+  geom_line(size = 0.7) +
+  geom_point(size = 2) +
+  labs(
+    title = "Rookie Defensive Stats Over Time",
+    x = "Year", 
+    y = "Defensive Stats"
+  ) +
+  geom_text_repel(
+    data = Def_PROG_FORMED[Def_PROG_FORMED$Year == "2023", ],
+    aes(label = Player), 
+    nudge_x = 0.5,
+    direction = "y",
+    hjust = 0
+    ) +
+  theme_minimal()
+
+
 
 
 
