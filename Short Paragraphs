@@ -1,3 +1,13 @@
+We wanted to investigate data on NBA players from 2020-21 compared to 2023-2024. We took two data sets, 
+one from each year, and combined them to analyze players such as Anthony Edwards, Tyrese Maxey, 
+Patrick Williams and others. We had to pull similar data from the appropriate columns to compare them. 
+We also made sure that we filtered out a 2020 draft class so that we had only the players we were interested 
+in which is from the draft. Our visualizations did most of the story telling, and we had graphs that 
+showed the improvement or worsening in minutes played per game for certain players, their eFG percentage, 
+and player points. 
+
+
+
 The first graph illustrates the changes in minutes played per game for NBA players between the 2020 and 2023 seasons.
 It highlights variations in players' involvement, with some, like Anthony Edwards, seeing significant increases in playing 
 time, while others, such as R.J. Hampton, experienced decreases. This metric reflects players' evolving roles and importance within their teams.
