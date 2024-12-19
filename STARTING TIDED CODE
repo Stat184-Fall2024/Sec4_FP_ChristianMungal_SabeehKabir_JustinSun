@@ -203,3 +203,236 @@ ggplot(
 
 *TIMEPLOT* FOR GROWTH VISUALIZATIONS
 
+
+
+//Code for Graph
+
+#Making the plots and graphs
+library(ggplot2)
+
+PTS_PROG <- bind_cols(
+  select(twenty20_stats, Player),
+  select(twenty20_stats, PTS),
+  select(twenty23_stats, PPG)
+)
+PTS_PROG <- PTS_PROG %>%
+  rename(
+    PPG2020 = PTS,
+    PPG2023 = PPG
+  )
+
+PTS_PROG_FORMED <- pivot_longer(
+  PTS_PROG,
+  cols = c(PPG2020, PPG2023),
+  names_to = "Season",
+  values_to = "Points"
+)
+PTS_PROG_FORMED$Player <- gsub(" ", "\n", PTS_PROG_FORMED$Player)
+
+
+
+# Load required libraries
+library(tidyverse)
+library(ggplot2)
+
+# Combine columns for eFG%
+eFG_PROG <-bind_cols(
+  dplyr::select(twenty20_stats, Player),
+  dplyr::select(twenty20_stats, eFG.),
+  dplyr::select(twenty23_stats, eFG.)
+)
+
+# Rename columns
+eFG_PROG <- eFG_PROG %>%
+  rename(
+    eFG2020 = eFG....2,
+    eFG2023 = eFG....3  # Ensure correct column selection if duplicates exist
+  )
+
+# Transform data into long format
+eFG_PROG_FORMED <- pivot_longer(
+  eFG_PROG,
+  cols = c(eFG2020, eFG2023),
+  names_to = "Season",
+  values_to = "eFG_Percentage"
+)
+
+# Format Player names for better display
+eFG_PROG_FORMED$Player <- gsub(" ", "\n", eFG_PROG_FORMED$Player)
+
+
+library(ggplot2)
+library(dplyr)
+
+# Convert "PPG2020" and "PPG2023" to numeric years:
+PTS_PROG_FORMED <- PTS_PROG_FORMED %>%
+  mutate(Season = recode(Season, 
+                         "PPG2020" = "2020", 
+                         "PPG2023" = "2023"),
+         Season = as.integer(Season))
+
+# Create a time plot
+ggplot(PTS_PROG_FORMED, aes(x = Season, y = Points, group = Player, color = Player)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(breaks = c(2020, 2023)) +
+  labs(
+    title = "Player Points: 2020 vs 2023",
+    x = "Season",
+    y = "Points per Game"
+  ) +
+  theme_minimal()
+
+
+
+library(ggplot2)
+library(dplyr)
+
+# Ensure Season is a factor
+PTS_PROG_FORMED <- PTS_PROG_FORMED %>%
+  mutate(Season = factor(Season, levels = c("PPG2020", "PPG2023")))
+
+ggplot(PTS_PROG_FORMED, aes(x = Player, y = Points, fill = Season)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  scale_fill_manual(values = c(PPG2020 = "blue", PPG2023 = "lightblue")) +
+  labs(
+    title = "2020 vs. 2023 Points Comparison",
+    x = "Player",
+    y = "Points per Game"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    legend.title = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Assume your data frame is called eFG_PROG with columns: Player, eFG2020, eFG2023
+# First, pivot to long format
+eFG_PROG_FORMED<- eFG_PROG %>%
+  pivot_longer(cols = c("eFG2020", "eFG2023"), 
+               names_to = "Season", 
+               values_to = "eFG") %>%
+  mutate(
+    # Convert Season names to numeric years
+    Season = recode(Season, "eFG2020" = "2020", "eFG2023" = "2023"),
+    Season = as.integer(Season)
+  )
+
+# Plot the time plot (slope chart)
+ggplot(eFG_PROG_FORMED, aes(x = Season, y = eFG, group = Player, color = Player)) +
+  geom_line(size = 1, alpha = 0.7) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = c(2020, 2023)) +
+  labs(
+    title = "Change in Player eFG% from 2020 to 2023",
+    x = "Season",
+    y = "eFG%"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(hjust = 0.5),
+    plot.title = element_text(face = "bold")
+    
+  )
+
+
+library(dplyr)
+library(ggplot2)
+
+# Assuming PTS_PROG_FORMED has the columns: Player, Season, and Points
+# and Season takes values "PPG2020" and "PPG2023".
+
+
+ggplot(PTS_PROG_FORMED, aes(x = Season, y = Points, group = Player, color = Player)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = c(2020, 2023)) +
+  labs(
+    title = "Time Series Plot of Player Points: 2020 vs 2023",
+    x = "Season",
+    y = "Points per Game"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(hjust = 0.5),
+    plot.title = element_text(face = "bold")
+  )
+
+
+
+
+ggplot(eFG_PROG_FORMED, aes(x = Season, y = eFG, group = Player, color = Player)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = c(2020, 2023)) +
+  labs(
+    title = "Player eFG% 2020 vs 2023",
+    x = "Season",
+    y = "eFG%"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(hjust = 0.5),
+    plot.title = element_text(face = "bold")
+  )
+
+
+# Combine columns for eFG%
+Minutes_PROG <-bind_cols(
+  dplyr::select(twenty20_stats, Player),
+  dplyr::select(twenty20_stats, MP),
+  dplyr::select(twenty23_stats, MPG)
+)
+
+# Rename columns
+Minutes_PROG <- Minutes_PROG %>%
+  rename(
+    Minutes_2020 =MPG,
+    Minutes_2023 =MP  # Ensure correct column selection if duplicates exist
+  )
+
+# Transform data into long format
+Minutes_FORMED <- pivot_longer(
+  Minutes_PROG,
+  cols = c(Minutes_2020, Minutes_2023),
+  names_to = "Season",
+  values_to = "Minutes"
+)
+
+# Format Player names for better display
+eFG_PROG_FORMED$Player <- gsub(" ", "\n", eFG_PROG_FORMED$Player)
+
+
+
+# Clean Season names
+Minutes_FORMED <- Minutes_FORMED %>%
+  mutate(Season = recode(Season, "Minutes_2020" = "2020", "Minutes_2023" = "2023"),
+         Season = as.integer(Season))
+
+# Create the time plot
+ggplot(Minutes_FORMED, aes(x = Season, y = Minutes, group = Player, color = Player)) +
+  geom_line(size = 1, alpha = 0.7) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = c(2020, 2023)) +
+  labs(
+    title = "Minutes Per Game 2020 vs 2023",
+    x = "Season",
+    y = "Minutes Played"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "right",
+    axis.text.x = element_text(hjust = 0.5),
+    plot.title = element_text(face = "bold")
+  )
