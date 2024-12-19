@@ -110,58 +110,6 @@ twenty23_stats <- twenty23_stats[-c(
   1, 9, 11, 12, 15, 20, 21, 22, 24, 30, 31, 32, 35, 36, 37), ]
 twenty20_stats <- twenty20_stats[-c(9, 11, 23, 26), ]
 
-PTS_PROG <- bind_cols(
-  select(twenty20_stats, Player),
-  select(twenty20_stats, PTS),
-  select(twenty23_stats, PPG)
-)
-PTS_PROG <- PTS_PROG %>%
-  rename(
-    "2020" = PTS,
-    "2023" = PPG
-  )
-
-PTS_PROG_FORMED <- pivot_longer(
-  PTS_PROG,
-  cols = c("2020", "2023"),
-  names_to = "Year",
-  values_to = "PPG"
-)
-PTS_PROG_FORMED$Year <- as.numeric(PTS_PROG_FORMED$Year)
-ggplot(
-  PTS_PROG_FORMED, 
-  aes(
-    x = Year,
-    y = PPG, 
-    color = Player, 
-    group = Player
-  )
-) +
-  geom_line(size = 0.7) +
-  geom_point(size = 2) +
-  labs(
-    title = "Points Per Game Over Time", 
-    x = "Year", 
-    y = "Points Per Game (PPG)"
-  ) +
-  scale_x_continuous(
-    breaks = c(2020, 2023),
-    limits = c(2019,2024)
-  ) +
-  geom_text_repel(
-    data = PTS_PROG_FORMED[PTS_PROG_FORMED$Year == 2023, ], 
-    aes(
-      label = Player
-    ), 
-    nudge_x = 0.5, 
-    direction = "y", 
-    hjust = 0
-  )+
-  theme_minimal() +
-  theme(
-    legend.position = "none"
-  )
-
 #Defensive Stats 
 twenty23_stats <- twenty23_stats %>%
   mutate(DefStats23 = SPG + BPG)
