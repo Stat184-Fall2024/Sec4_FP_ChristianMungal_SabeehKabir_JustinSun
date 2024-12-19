@@ -157,14 +157,7 @@ ggplot(
   theme_minimal()
 
 
-
-
-
-//Code for Graph
-
-#Making the plots and graphs
-library(ggplot2)
-
+#Setting Up PPG Progression
 PTS_PROG <- bind_cols(
   select(twenty20_stats, Player),
   select(twenty20_stats, PTS),
@@ -185,10 +178,6 @@ PTS_PROG_FORMED <- pivot_longer(
 PTS_PROG_FORMED$Player <- gsub(" ", "\n", PTS_PROG_FORMED$Player)
 
 
-
-# Load required libraries
-library(tidyverse)
-library(ggplot2)
 
 # Combine columns for eFG%
 eFG_PROG <-bind_cols(
